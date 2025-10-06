@@ -8,6 +8,8 @@ import gitea from "gitea-api";
 import path from 'path';
 import CryptoJS from 'crypto-js';
 
+import FormData from "form-data";
+
 function getIsTrue(v) {
     const trueValue = ['true', 'True', 'TRUE']
     return trueValue.includes(v)
@@ -169,15 +171,22 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
     //const content = fs.readFileSync(filepath);
     //let blob = new Blob([content]);
     const stream = fs.createReadStream(filepath);
+    const form = new FormData();
+    form.append("attachment", stream, path.basename(filepath));
+
+    await client.request(
+      "POST",
+      `/repos/${owner}/${repo}/releases/${release_id}/assets?name=${encodeURIComponent(path.basename(filepath))}`,
+      form
+    );
       
-    await client.repository.repoCreateReleaseAttachment({
-      owner: owner,
-      repo: repo,
-      id: release_id,
-      //attachment: blob,
-      attachment: stream,
-      name: path.basename(filepath),
-    })
+    // await client.repository.repoCreateReleaseAttachment({
+    //   owner: owner,
+    //   repo: repo,
+    //   id: release_id,
+    //   attachment: blob,
+    //   name: path.basename(filepath),
+    // })
     if (params.md5sum) {
       let wordArray = CryptoJS.lib.WordArray.create(content);
       let hash = CryptoJS.MD5(wordArray).toString();

@@ -38691,6 +38691,14 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 3186:
+/***/ ((module) => {
+
+module.exports = eval("require")("form-data");
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -48133,7 +48141,11 @@ var core = __nccwpck_require__(2186);
 var dist = __nccwpck_require__(5371);
 // EXTERNAL MODULE: ./node_modules/crypto-js/index.js
 var crypto_js = __nccwpck_require__(4134);
+// EXTERNAL MODULE: ./node_modules/@vercel/ncc/dist/ncc/@@notfound.js?form-data
+var _notfoundform_data = __nccwpck_require__(3186);
 ;// CONCATENATED MODULE: ./main.js
+
+
 
 
 
@@ -48305,15 +48317,22 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
     //const content = fs.readFileSync(filepath);
     //let blob = new Blob([content]);
     const stream = external_fs_.createReadStream(filepath);
+    const form = new _notfoundform_data();
+    form.append("attachment", stream, external_path_.basename(filepath));
+
+    await client.request(
+      "POST",
+      `/repos/${owner}/${repo}/releases/${release_id}/assets?name=${encodeURIComponent(external_path_.basename(filepath))}`,
+      form
+    );
       
-    await client.repository.repoCreateReleaseAttachment({
-      owner: owner,
-      repo: repo,
-      id: release_id,
-      //attachment: blob,
-      attachment: stream,
-      name: external_path_.basename(filepath),
-    })
+    // await client.repository.repoCreateReleaseAttachment({
+    //   owner: owner,
+    //   repo: repo,
+    //   id: release_id,
+    //   attachment: blob,
+    //   name: path.basename(filepath),
+    // })
     if (params.md5sum) {
       let wordArray = crypto_js.lib.WordArray.create(content);
       let hash = crypto_js.MD5(wordArray).toString();
