@@ -166,13 +166,16 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
   }
   // upload new release attachment
   for (const filepath of all_files) {
-    const content = fs.readFileSync(filepath);
-    let blob = new Blob([content]);
+    //const content = fs.readFileSync(filepath);
+    //let blob = new Blob([content]);
+    const stream = fs.createReadStream(filepath);
+      
     await client.repository.repoCreateReleaseAttachment({
       owner: owner,
       repo: repo,
       id: release_id,
-      attachment: blob,
+      //attachment: blob,
+      attachment: stream,
       name: path.basename(filepath),
     })
     if (params.md5sum) {
