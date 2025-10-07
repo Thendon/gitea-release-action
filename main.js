@@ -171,14 +171,25 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
   for (const filepath of all_files) {
     //const content = fs.readFileSync(filepath);
     //let blob = new Blob([content]);
-    const form = new FormData();
-    form.append("attachment", await fileFromPath(filepath), path.basename(filepath));
+    // const form = new FormData();
+    // form.append("attachment", await fileFromPath(filepath), path.basename(filepath));
 
-    await client.request(
-      "POST",
-      `/repos/${owner}/${repo}/releases/${release_id}/assets?name=${encodeURIComponent(path.basename(filepath))}`,
-      form
-    );
+    // await client.request.request(
+    //   "POST",
+    //   `/repos/${owner}/${repo}/releases/${release_id}/assets?name=${encodeURIComponent(path.basename(filepath))}`,
+    //   form
+    // );
+
+    await client.request.request({
+      method: "POST",
+      url: "/repos/{owner}/{repo}/releases/{id}/assets",
+      path: { owner, repo, id: release_id },
+      query: { name: path.basename(filepath) },
+      formData: {
+        attachment: await fileFromPath(filepath)
+      },
+      mediaType: "multipart/form-data"
+    });
       
     // await client.repository.repoCreateReleaseAttachment({
     //   owner: owner,
