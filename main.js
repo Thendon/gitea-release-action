@@ -8,7 +8,7 @@ import gitea from "gitea-api";
 import path from 'path';
 import CryptoJS from 'crypto-js';
 
-import FormData from "form-data";
+import { FormData } from "formdata-node";
 
 function getIsTrue(v) {
     const trueValue = ['true', 'True', 'TRUE']
