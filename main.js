@@ -9,6 +9,7 @@ import path from 'path';
 import CryptoJS from 'crypto-js';
 
 import { FormData } from "formdata-node";
+import { fileFromPath } from "formdata-node/file-from-path"
 
 function getIsTrue(v) {
     const trueValue = ['true', 'True', 'TRUE']
@@ -170,9 +171,8 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
   for (const filepath of all_files) {
     //const content = fs.readFileSync(filepath);
     //let blob = new Blob([content]);
-    const stream = fs.createReadStream(filepath);
     const form = new FormData();
-    form.append("attachment", stream, path.basename(filepath));
+    form.append("attachment", await fileFromPath(filepath), path.basename(filepath));
 
     await client.request(
       "POST",
