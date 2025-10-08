@@ -8,7 +8,7 @@ import gitea from "gitea-api";
 import path from 'path';
 import CryptoJS from 'crypto-js';
 
-import { FormData } from "formdata-node";
+//import { FormData } from "formdata-node";
 import { fileFromPath } from "formdata-node/file-from-path"
 
 function getIsTrue(v) {
@@ -173,12 +173,6 @@ async function uploadFiles(client, owner, repo, release_id, all_files, params) {
     //let blob = new Blob([content]);
     // const form = new FormData();
     // form.append("attachment", await fileFromPath(filepath), path.basename(filepath));
-
-    // await client.request.request(
-    //   "POST",
-    //   `/repos/${owner}/${repo}/releases/${release_id}/assets?name=${encodeURIComponent(path.basename(filepath))}`,
-    //   form
-    // );
 
     await client.request.request({
       method: "POST",
